@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"github.com/rshezarr/gorr"
+	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) redirectUser(c gorr.Context) {
-	c.GetIntParam(id)
+func (h *Handler) redirectUser(c *gin.Context) {
+
 }

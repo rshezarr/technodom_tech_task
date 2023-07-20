@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"redirect_api/internal/config"
 	"time"
@@ -12,7 +13,7 @@ type Server struct {
 	ServerErrorNotify chan error
 }
 
-func NewServer(cfg *config.Config, router *http.ServeMux) *Server {
+func NewServer(cfg *config.Config, router *gin.Engine) *Server {
 	return &Server{
 		srv: &http.Server{
 			Addr:           cfg.API.Port,

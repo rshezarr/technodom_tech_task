@@ -1,23 +1,34 @@
 package app
 
 import (
+	"context"
 	"log"
 	"os"
 	"os/signal"
 	"redirect_api/internal/config"
 	"redirect_api/internal/handler"
+	"redirect_api/internal/repository"
 	"redirect_api/internal/server"
+	"redirect_api/internal/service"
+	"redirect_api/pkg"
 	"syscall"
 )
 
 func Start() {
+	db, err := pkg.ConnectDB(context.Background())
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+
 	if err := config.InitConfig(); err != nil {
 		log.Fatalf("error while init configs: %v", err)
 	}
 
 	cfg := config.NewConfig()
 
-	handler := handler.NewHandler()
+	repo := repository.NewRepository(db)
+	svc := service.NewService(repo)
+	handler := handler.NewHandler(svc)
 
 	server := server.NewServer(cfg, handler.InitRoutes())
 
@@ -30,8 +41,8 @@ func Start() {
 	}()
 
 	select {
-	case signal := <-quit:
-		log.Printf("app: signal accepted: %v\n", signal)
+	case sig := <-quit:
+		log.Printf("app: signal accepted: %v\n", sig)
 	case err := <-server.ServerErrNotify():
 		log.Printf("app: server closing: %v\n", err)
 	}
@@ -39,5 +50,4 @@ func Start() {
 	if err := server.Shutdown(); err != nil {
 		log.Printf("%s\n", err.Error())
 	}
-
 }
