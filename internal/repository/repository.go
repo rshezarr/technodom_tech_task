@@ -10,6 +10,6 @@ type Repository struct {
 
 func NewRepository(db *mongo.Database) *Repository {
 	return &Repository{
-		U: NewUrlRepo(db, "url_collection"),
+		U: NewUrlRepo(db, "url-collection"),
 	}
 }

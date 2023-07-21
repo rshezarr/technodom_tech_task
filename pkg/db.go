@@ -20,3 +20,15 @@ func ConnectDB(ctx context.Context) (*mongo.Database, error) {
 
 	return client.Database("url-db"), nil
 }
+
+func CreateCollections(ctx context.Context, database *mongo.Database) error {
+	collections := []string{"url-collection"}
+
+	for _, collection := range collections {
+		if err := database.CreateCollection(context.Background(), collection); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
