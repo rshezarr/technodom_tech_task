@@ -8,11 +8,13 @@ import (
 	"time"
 )
 
+// server class
 type Server struct {
 	srv               *http.Server
 	ServerErrorNotify chan error
 }
 
+// server object
 func NewServer(cfg *config.Config, router *gin.Engine) *Server {
 	return &Server{
 		srv: &http.Server{
@@ -26,14 +28,17 @@ func NewServer(cfg *config.Config, router *gin.Engine) *Server {
 	}
 }
 
+// run server while sending errors to error channel
 func (s *Server) Run() {
 	s.ServerErrorNotify <- s.srv.ListenAndServe()
 }
 
+// accept errors into channel
 func (s *Server) ServerErrNotify() <-chan error {
 	return s.ServerErrorNotify
 }
 
+// shutdown function
 func (s *Server) Shutdown() error {
 	return s.srv.Shutdown(context.Background())
 }
